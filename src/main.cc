@@ -11,9 +11,6 @@
 #include <ctime>
 #include <string>
 #include <sys/stat.h>
-#ifdef VCPKG_TOOLCHAIN
-#include <vorbis/vorbisfile.h>
-#endif
 // When building with GCC on Windows, this fixes the error where WinMain is
 // undefined.
 #ifdef main
@@ -64,16 +61,6 @@ void handleCommandLineArguments(int argc, const char* argv[], CoreState& coreSta
     std::cerr << "Base path: " << settings.basePath << std::endl;
 }
 int main(int argc, const char* argv[]) {
-#ifdef VCPKG_TOOLCHAIN
-    {
-        // Hack to force vcpkg to copy over the OGG/Vorbis libraries. Pretty much a
-        // no-op, so it has no performance penalty.
-        OggVorbis_File vf;
-        vf.seekable = 0;
-        ov_info(&vf, 0);
-    }
-#endif
-
     CoreState cs;
     CoreState_initialize(&cs);
     auto executablePath = std::filesystem::path(argv[0]);
